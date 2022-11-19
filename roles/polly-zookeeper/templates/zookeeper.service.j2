@@ -1,0 +1,21 @@
+# {{ansible_managed}}
+
+[Unit]
+Description=ZooKeeper
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User={{zookeeper_user}}
+Group={{zookeeper_user}}
+ExecStart={{zookeeper_dir}}/bin/zkServer.sh start-foreground
+Restart=always
+RestartSec=3
+Environment="JAVA_HOME={{ polly_jre_home }}"
+Environment="SERVER_JVMFLAGS=-Djava.rmi.server.useCodebaseOnly=true -Dcom.sun.jndi.ldap.object.trustURLCodebase=false -Dcom.sun.jndi.cosnaming.object.trustURLCodebase=false"
+
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target

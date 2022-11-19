@@ -1,0 +1,5 @@
+---
+- hosts: localhost
+  remote_user: test
+  roles:
+    - polly-jre

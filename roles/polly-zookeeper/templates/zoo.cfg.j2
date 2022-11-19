@@ -1,0 +1,28 @@
+tickTime={{ tick_time }}
+dataDir={{ zookeeper_data_dir }}
+{% if zookeeper_data_log_dir != zookeeper_data_dir %}
+dataLogDir={{ zookeeper_data_log_dir }}
+{% endif %}
+clientPort={{ client_port }}
+initLimit={{ init_limit }}
+syncLimit={{ sync_limit }}
+maxClientCnxns={{ zookeeper_max_client_connections }}
+4lw.commands.whitelist=*
+
+{% if zookeeper_autopurge_purgeInterval > 0 %}
+autopurge.purgeInterval={{ zookeeper_autopurge_purgeInterval }}
+autopurge.snapRetainCount={{ zookeeper_autopurge_snapRetainCount }}
+{% endif %}
+
+{% if zookeeper_admin_server is defined and zookeeper_admin_server is sameas true%}
+admin.enableServer=true
+{% else %}
+admin.enableServer=false
+{% endif %}
+{% if zookeeper_admin_server_port is defined %}
+admin.serverPort={{ zookeeper_admin_server_port }}
+{% endif %}
+
+{% for ip in zookeeper %}
+server.{{ hostvars[ip].zid }}={{ ip }}:{{ zookeeper_cluster_ports }}
+{% endfor %}

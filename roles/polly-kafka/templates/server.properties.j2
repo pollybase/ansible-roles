@@ -1,0 +1,11 @@
+#jinja2: trim_blocks:False
+broker.id={{ broker_id }}
+zookeeper.connect={% for server in groups['zookeeper'] %}{{ server }}:{{ zookeeper_client_port }}{% if not loop.last %},{% endif %}{% endfor %}
+listeners={% for listener in kafka_listeners -%}{{ listener.scheme | default('PLAINTEXT') }}://{{ listener.host | default('') }}:{{ listener.port | default('9092') }}{% if not loop.last %}, {% endif %}{%- endfor %}
+replica.fetch.max.bytes=104857600
+message.max.bytes=104857600
+compression.type=producer
+log.dirs={{ kafka_log_dirs }}
+log.retention.hours=48
+log.retention.check.interval.ms=300000
+unclean.leader.election.enable=false

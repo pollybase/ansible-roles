@@ -1,0 +1,19 @@
+---
+polly_jre_home: /usr/lib/polly-jre
+kafka_user: kafka
+kafka_scala_version: 2.12
+kafka_version: 3.3.1
+kafka_dir: "/home/{{ kafka_user }}/polly-kafka-{{ kafka_version }}"
+
+zookeeper_client_port: 2181
+
+kafka_listeners:
+- scheme: "PLAINTEXT"
+  host: "{{ inventory_hostname }}"
+  port: 9092
+kafka_log_dirs: "/data/polly_kafka"
+kafka_jmx_opts: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false "
+kafka_opts: "-Djava.rmi.server.useCodebaseOnly=true -Dcom.sun.jndi.ldap.object.trustURLCodebase=false -Dcom.sun.jndi.cosnaming.object.trustURLCodebase=false -Dlog4j.configuration=file:{{ kafka_dir }}/config/log4j.properties"
+
+kafka_java_heap: "-Xms6g -Xmx6g"
+

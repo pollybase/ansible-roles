@@ -1,0 +1,5 @@
+---
+- hosts: kafka
+  remote_user: root
+  roles:
+    - polly-kafka

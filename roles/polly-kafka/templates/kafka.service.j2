@@ -1,0 +1,19 @@
+[Unit]
+  Description=Kafka Service
+
+[Service]
+  Restart=on-failure
+  RestartSec=3
+  LimitNOFILE=1000000
+  Environment="LOG_DIR={{ kafka_dir }}/logs"
+  Environment="GC_LOG_ENABLED=true"
+  Environment="JAVA_HOME={{ polly_jre_home }}"
+  Environment="KAFKA_HEAP_OPTS={{ kafka_java_heap }}"
+  Environment="KAFKA_JMX_OPTS={{ kafka_jmx_opts }}"
+  Environment="KAFKA_OPTS={{ kafka_opts }}"
+  User={{ kafka_user }}
+  Group={{ kafka_user }}
+  ExecStart={{ kafka_dir }}/bin/kafka-server-start.sh {{ kafka_dir }}/config/server.properties
+
+[Install]
+  WantedBy=default.target

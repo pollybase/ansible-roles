@@ -1,0 +1,6 @@
+---
+- hosts: zookeeper
+  remote_user: test
+  roles:
+    - role: polly-jre
+    - role: polly-zookeeper

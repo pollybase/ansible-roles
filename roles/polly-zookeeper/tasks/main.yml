@@ -1,0 +1,144 @@
+---
+- name: 创建zookeeper分组
+  become: yes
+  become_user: root
+  group:
+    name: "{{ zookeeper_user }}"
+    system: yes
+
+- name: 创建zookeeper用户
+  become: yes
+  become_user: root
+  user:
+    name: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+    system: yes
+
+- name: 确保zookeeper安装目录 {{ zookeeper_dir }}存在，否则创建
+  become: yes
+  become_user: root
+  file:
+    path: "{{ zookeeper_dir }}"
+    state: directory
+
+- name: 发送zookeeper安装包，并且解压
+  become: yes
+  become_user: root
+  unarchive:
+    src: "apache-zookeeper-{{ zookeeper_version }}-bin.tar.gz"
+    dest: "{{ zookeeper_dir }}/"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+    creates: "{{ zookeeper_dir }}/bin"
+    extra_opts:
+    - --strip-components=1
+
+- name: 确认zookeeper的属主
+  become: yes
+  become_user: root
+  file:
+    path: "{{ zookeeper_dir }}"
+    state: directory
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+
+- name: 创建zookeeper数据目录，配置目录
+  become: yes
+  become_user: root
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+  with_items:
+    - "{{ zookeeper_data_dir }}"
+    - "{{ zookeeper_log_dir }}"
+    - "{{ zookeeper_conf_dir }}"
+    - "{{ zookeeper_data_log_dir | default([]) }}"
+
+- name: 在zookeeper数据目录写入节点的id文件
+  become: yes
+  become_user: root
+  template:
+    src: myid.j2
+    dest: "{{ zookeeper_data_dir }}/myid"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+    force: yes
+  notify:
+    - Restart zookeeper
+
+- name: 写入zookeeper核心配置文件zoo.cfg
+  become: yes
+  become_user: root
+  template:
+    src: zoo.cfg.j2
+    dest: "{{ zookeeper_conf_dir }}/zoo.cfg"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+  notify:
+    - Restart zookeeper
+
+- name: 覆盖zkEnv.sh中日志配置写到文件当中
+  become: yes
+  become_user: root
+  template:
+    src: zkEnv.sh.j2
+    dest: "{{ zookeeper_dir }}/bin/zkEnv.sh"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+    mode: 0755
+  notify:
+    - Restart zookeeper
+
+- name: 将zookeeper设置为系统服务
+  become: yes
+  become_user: root
+  template:
+    src: zookeeper.service.j2
+    dest: /etc/systemd/system/zookeeper.service
+  notify: Restart zookeeper
+
+- name: 给zookeeper服务添加Log4j日志配置文件
+  become: yes
+  become_user: root
+  template:
+    src: log4j.properties.j2
+    dest: "{{ zookeeper_conf_dir }}/log4j.properties"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_user }}"
+  notify:
+    - Restart zookeeper
+
+- name: 让zookeeper系统服务生效
+  become: yes
+  become_user: root
+  service:
+    name: zookeeper
+    enabled: yes
+
+- name: 启动zookeeper服务
+  become: yes
+  become_user: root
+  systemd:
+    name: zookeeper
+    state: started
+
+- meta: flush_handlers #告诉handler现在就执行，执行完handler，才会执行下面的block
+
+- name: 等待zookeeper服务启动，15秒后查看zookeeper集群状态
+  become: yes
+  become_user: root
+  pause: 
+    seconds: 15
+
+- block: 
+    - name: 通过shell命令获取zk状态和leader信息
+      become: yes
+      become_user: "{{ zookeeper_user }}"
+      shell: 
+        chdir: "{{ zookeeper_dir }}/bin"
+        cmd: "bash zkServer.sh status"
+      register: zookeeper_check_status
+    - debug:
+        var: zookeeper_check_status.stdout_lines 

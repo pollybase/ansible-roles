@@ -1,0 +1,11 @@
+---
+
+- name:  启动 pollybase service
+  become: yes
+  become_user: root
+  service:
+    name: "pollybase"
+    state: restarted
+    daemon_reload: yes
+  listen: Restart pollybase
+

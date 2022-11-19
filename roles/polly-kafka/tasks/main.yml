@@ -1,0 +1,99 @@
+---
+- name: 创建kafka账户分组
+  become: yes
+  become_user: root
+  group: 
+    name: "{{ kafka_user }}" 
+    system: true
+
+- name: 创建kafka账户
+  become: yes
+  become_user: root
+  user: 
+    name: "{{ kafka_user }}" 
+    group: "{{ kafka_user }}" 
+    system: true
+
+- name: 确保kafka安装目录 {{ kafka_dir }}存在，否则创建
+  become: yes
+  become_user: root
+  file:
+    path: "{{ kafka_dir }}"
+    state: directory
+
+- name: 分发kafka的安装包
+  become: yes
+  become_user: root
+  unarchive:
+    src: "kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz"
+    dest: "{{ kafka_dir }}/"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    creates: "{{ kafka_dir }}/bin"
+    extra_opts:
+    - --strip-components=1
+
+- name: 确认kafka的属主
+  become: yes
+  become_user: root
+  file:
+    path: "{{ kafka_dir }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+
+- name: 创建kafka配置目录
+  become: yes
+  become_user: root
+  file:
+    path: "{{ kafka_dir }}/config"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+
+
+- name: 创建kafka的数据目录
+  become: yes
+  become_user: root
+  file:
+    path: '{{ item }}'
+    state: directory
+    group: '{{ kafka_user }}'
+    owner: '{{ kafka_user }}'
+    mode: 0755
+  with_items: "{{ kafka_log_dirs.split(',') }}"
+
+- name: Kafka broker核心配置文件
+  become: yes
+  become_user: root
+  template:
+    src: "server.properties.j2"
+    dest: "{{ kafka_dir }}/config/server.properties"
+    mode: 0644
+  notify: Restart Kafka
+
+- name: Kafka log4j配置文件
+  become: yes
+  become_user: root
+  template:
+    src: "log4j.properties.j2"
+    dest: "{{ kafka_dir }}/config/log4j.properties"
+    mode: 0644
+  notify: Restart Kafka
+
+- name: 创建kafka系统服务
+  become: yes
+  become_user: root
+  template:
+    src: "kafka.service.j2"
+    dest: /etc/systemd/system/kafka.service
+    mode: 0644
+  notify: Restart Kafka
+
+- name: 让kafka系统服务生效
+  become: yes
+  become_user: root
+  service:
+    name: "kafka"
+    enabled: yes
+    state: started

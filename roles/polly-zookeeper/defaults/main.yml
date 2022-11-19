@@ -1,0 +1,21 @@
+---
+polly_jre_home: /usr/lib/polly-jre
+zookeeper_user: zookeeper
+zookeeper_version: 3.5.10
+client_port: 2181
+init_limit: 5
+sync_limit: 2
+tick_time: 2000
+zookeeper_autopurge_purgeInterval: 0
+zookeeper_autopurge_snapRetainCount: 10
+zookeeper_cluster_ports: "2888:3888"
+zookeeper_max_client_connections: 60
+zookeeper_admin_server: false
+zookeeper_data_dir: "/data/polly-zookeeper-data"
+zookeeper_data_log_dir: "{{ zookeeper_data_dir }}"
+zookeeper_dir: "/home/{{ zookeeper_user }}/polly-zookeeper-{{ zookeeper_version }}"
+zookeeper_log_dir: "{{ zookeeper_dir }}/logs"
+zookeeper_conf_dir: "{{ zookeeper_dir }}/conf"
+zookeeper_rolling_log_file_max_size: 10MB
+zookeeper_max_rolling_log_file_count: 10
+zookeeper: "{{ groups['zookeeper'] }}"

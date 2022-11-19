@@ -1,0 +1,14 @@
+---
+galaxy_info:
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  - name: Ubuntu
+    versions:
+    - xenial
+    - bionic
+
+dependencies:
+  - role: polly-jre

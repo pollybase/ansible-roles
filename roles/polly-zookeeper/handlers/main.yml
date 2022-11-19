@@ -1,0 +1,9 @@
+---
+- name: 启动 zookeeper
+  become: yes
+  become_user: root
+  service:
+    name: zookeeper
+    daemon_reload: yes
+    state: restarted
+  listen: Restart zookeeper

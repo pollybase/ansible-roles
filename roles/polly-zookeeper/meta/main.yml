@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  role_name: polly-zookeeper
+
+  platforms:
+  - name: EL
+    versions:
+     - 7
+  - name: Ubuntu
+    versions:
+      - xenial
+      - bionic
+
+dependencies:
+  - role: polly-jre

@@ -1,0 +1,24 @@
+---
+polly_jre_home: /usr/lib/polly-jre
+polly_user: polly
+polly_dir: "/home/{{ polly_user }}/pollybase"
+polly_audit_log_dir: "{{ polly_dir }}/logs"
+polly_log_dir: "{{ polly_dir }}/logs"
+polly_version: 1.0.1
+polly_hot_data_dir: "/data/polly-hot-data"
+polly_warm_data_enable: false
+plly_warm_data_dir: "/data/polly-warm-data"
+polly_hot_data_threshold: 80
+polly_http_bind: "0.0.0.0"
+polly_http_port: 15630
+polly_es_port: 19200
+polly_public_url: "http://{{ inventory_hostname }}:{{polly_http_port}}"
+polly_external_url: "http://{{ inventory_hostname }}:{{polly_http_port}}"
+polly_java_opts_Xss: "2M"
+polly_java_opts_Xms: "8G"
+polly_java_opts_Xmx: "8G"
+polly_java_opts_MaxDirectMemorySize: "24G"
+zookeeper_cliet_port: 2181
+kafka_broker_port: 9092
+zookeeper: "{{ groups['zookeeper'] }}"
+kafka: "{{ groups['kafka'] }}"

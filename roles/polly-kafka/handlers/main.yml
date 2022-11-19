@@ -1,0 +1,9 @@
+---
+- name: 启动 Kafka SystemD service
+  become: yes
+  become_user: root
+  service:
+    name: kafka
+    daemon_reload: yes
+    state: restarted
+  listen: Restart Kafka

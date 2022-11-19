@@ -1,0 +1,7 @@
+---
+- name: 发送jre压缩包并解压
+  become: yes
+  become_user: root
+  unarchive:
+    src: "polly-jre.tar.gz"
+    dest: "{{ polly_jre_dir }}/"
