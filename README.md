@@ -3,7 +3,7 @@
 
 ansible是目前业内比较流行的自动化部署工具，这里我们实现了基于ansible的pollybase自动化部署，用户只需要简单的配置，即可快速创建pollybase集群。
 
-###一、准备工作
+### 一、准备工作
 
 ansible只需要在一台机器上安装，就可以控制多台其它服务器，其它服务器不需要安装任何agent，底层通信是基于ssh。
 
@@ -67,16 +67,16 @@ ssh 192.168.239.136 "sudo echo ok"
 ```
 如果全部正常返回，那么实现了test账户的sudo免密
 
-####2、确保待部署机器之间网络和端口互通
+#### 2、确保待部署机器之间网络和端口互通
 待部署服务器之间应使用内网通信，确保端口互通，一般做法是关闭防火墙：
 ```
 systemctl disable firewalld
 ```
 否则可能在部署过程会出现zookeeper无法互联导致部署中断。
-####3、确保待安装服务器时钟同步
+#### 3、确保待安装服务器时钟同步
 请运维同学安装`ntp时钟同步`服务，pollybase是时序数据的存储查询引擎，如果服务器之间时钟差异较大，可能会出现意想不到的异常。
 
-####4、主控机安装ansible
+#### 4、主控机安装ansible
 ```
 yum install ansible -y
 安装完成后，执行：
@@ -84,11 +84,11 @@ ansible --version
 ```
 如果能正常看到ansible的版本信息，说明ansible安装成功，经测试无误的`ansible`版本是`2.9.27`
 
-####5、准备pollybase集群的`roles`
+#### 5、准备pollybase集群的`roles`
 在`/root/.ansible/`目录下，创建`roles`目录，这是ansible默认会扫描的`roles`目录之一.
 将`roles.tar.gz`当中的`polly-jre`,`polly-zookeeper`,`polly-kafka`,`polly-server`全部放到`/root/.ansible/roles`目录下即可。
 
-###二、集群配置
+### 二、集群配置
 zookeeper、kafka、pollybase的配置信息分别在各自的`defaults/main.yml`文件中。
 `polly-zookeeper/defaults/main.yml`:
 ```
@@ -165,8 +165,8 @@ zookeeper: "{{ groups['zookeeper'] }}"
 kafka: "{{ groups['kafka'] }}"
 ```
 ______
-###二、安装
-####1、单机安装示例
+### 二、安装
+#### 1、单机安装示例
 ```
 #以下各分组名字不可更改哦
 #is_datanode=false则这个节点不存储任何实例，也不参与消费
@@ -193,7 +193,7 @@ ______
 ```
 使用Chrome浏览器，访问地址`http://192.168.239.131:15630`
 
-####2、集群安装
+#### 2、集群安装
 在主控机准备好机器列表和安装剧本：
 主机列表文件hosts:
 ```
