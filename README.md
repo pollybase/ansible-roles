@@ -180,7 +180,7 @@ ______
 192.168.239.131 zid=1
 ```
 **准备剧本：**
-**!!#ff0000 如果您使用的部署`root`账户`ssh免密`，而是其它普通账户，那么需要把下面全部的`remote_user`换成该账户的名字。!!**
+** 如果您使用的部署`root`账户`ssh免密`，而是其它普通账户，那么需要把下面全部的`remote_user`换成该账户的名字。**
 ```
 - hosts: kafka
   remote_user: root
@@ -249,13 +249,7 @@ pollybase需要先启动一个节点，这个节点作为集群第一个节点�
 ```
 ansible-playbook -i hosts test.yml
 ```
-安装安装完成后，需要给集群节点分配消费分区和存储分区：
-
-![enter image description here](/tfl/pictures/202211/tapd_50282252_1668060128_83.png)
-分配后的消费分区：
-![enter image description here](/tfl/pictures/202211/tapd_50282252_1668060171_87.png)
-
-存储分区的操作与消费分区一模一样
+安装安装完成后，需要在集群管理界面给集群节点分配消费分区和存储分区。
 
 
 
