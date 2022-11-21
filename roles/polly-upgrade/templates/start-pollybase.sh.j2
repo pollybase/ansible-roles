@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+KAFKA_HEAP_OPTS="-XX:+UseParallelOldGC -Xms{{ polly_java_opts_Xms }} -Xmx{{ polly_java_opts_Xmx }} -Xss{{ polly_java_opts_Xss }} -XX:MaxDirectMemorySize={{ polly_java_opts_MaxDirectMemorySize }} -Xlog:gc*,gc+jni=debug:file={{ polly_dir }}/logs/gc.log:time,tags:filecount=5,filesize=102400"
+
+POLLY_JAR_FILE="{{ polly_dir }}/lib/pollybase-{{ polly_version }}.jar"
+
+exec {{ polly_jre_home }}/bin/java -server $KAFKA_HEAP_OPTS -cp $POLLY_JAR_FILE -jar $POLLY_JAR_FILE "$@"

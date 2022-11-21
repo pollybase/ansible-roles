@@ -1,0 +1,18 @@
+---
+
+- hosts: polly_leader
+  remote_user: test
+  roles:
+    - polly-upgrade
+
+- hosts: polly_leader
+  remote_user: test
+  tasks:
+    - name: "等待主节点初始化完成"
+      pause:
+        seconds: 15 
+
+- hosts: polly_other
+  remote_user: test
+  roles:
+    - polly-upgrade

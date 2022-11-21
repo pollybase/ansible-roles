@@ -1,0 +1,57 @@
+---
+- name: 分发pollybase压缩包并解压 
+  become: yes
+  become_user: root
+  unarchive:
+    src: "pollybase-{{ polly_version }}.tar.gz"
+    dest: "{{ polly_dir }}/"
+    owner: "{{ polly_user }}"
+    group: "{{ polly_user }}"    
+    extra_opts:
+    - --strip-components=1
+
+- name: 创建冷数据目录
+  become: yes
+  become_user: root
+  file:
+    path: "{{ polly_warm_data_dir }}"
+    state: directory
+    owner: "{{ polly_user }}"
+    group: "{{ polly_user }}"
+    mode: 0755
+  notify: Restart pollybase
+  when: polly_warm_data_enable
+
+- name: 写入pollybase核心配置文件polly.conf
+  become: yes
+  become_user: root
+  template:
+    src: polly.conf.j2
+    dest: "{{ polly_dir }}/config/polly.conf"
+    owner: "{{ polly_user }}"
+    group: "{{ polly_user }}"
+  tags: deploy
+  notify:
+    - Restart pollybase
+
+- name: 写入pollybase启动脚本
+  become: yes
+  become_user: root
+  template:
+    src: start-pollybase.sh.j2
+    dest: "{{ polly_dir }}/bin/start-pollybase.sh"
+    owner: "{{ polly_user }}"
+    group: "{{ polly_user }}"
+    mode: 0755
+  tags: deploy
+  notify:
+    - Restart pollybase
+
+- name: 创建pollybase系统服务
+  become: yes
+  become_user: root
+  template:
+    src: "pollybase.service.j2"
+    dest: /etc/systemd/system/pollybase.service
+  notify: Restart pollybase
+

@@ -1,0 +1,10 @@
+[polly_leader]
+192.168.239.131 is_datanode=true
+
+
+[kafka]
+192.168.239.131 broker_id=0
+
+[zookeeper]
+192.168.239.131 zid=1
+

@@ -1,0 +1,6 @@
+---
+- hosts: polly_leader
+  remote_user: test
+  roles:
+    - polly-upgrade
+

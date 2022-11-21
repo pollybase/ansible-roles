@@ -1,0 +1,16 @@
+#jinja2: trim_blocks:False
+pollyBaseHotDataDir={{ polly_hot_data_dir }}
+{%- if polly_warm_data_enable %}
+pollyBaseHotStoragePercentage={{ polly_hot_data_threshold }}
+pollyBaseWarmDataDir={{ polly_warm_data_dir }}
+{%- endif %}
+pollyBaseIsDataNode={{ is_datanode }}
+pollyBaseBindPort={{ polly_http_port }}
+pollyBaseEsBindPort={{ polly_es_port }}
+pollyBaseZookeeperServers={% for ip in zookeeper %}{{ ip }}:{{ zookeeper_cliet_port }}{% if not loop.last %},{% endif %}{% endfor %}
+pollyBaseKafkaBootstrapServers={% for ip in kafka %}{{ ip }}:{{ kafka_broker_port }}{% if not loop.last %},{% endif %}{% endfor %}
+pollyBaseExternalUrl={{ polly_external_url }}
+pollyBasePublicUrl={{ polly_public_url }}
+pollyBaseHttpBindAddress={{ polly_http_bind }}
+pollyBaseAuditLogDir={{ polly_audit_log_dir }}
+pollyBaseLogDir={{ polly_log_dir }}

@@ -1,0 +1,21 @@
+[Unit]
+  Description=pollybase service
+  After=network.service
+  StartLimitIntervalSec=120
+  StartLimitBurst=3
+
+[Service]
+  Type=notify
+  Restart=on-abnormal
+  User={{ polly_user }}
+  Group={{ polly_user }}
+  LimitNOFILE=1000000:1000000
+  TimeoutStopSec=300
+  TimeoutSec=900
+  Restart=always
+  EnvironmentFile={{ polly_dir }}/config/polly.conf
+  WorkingDirectory={{ polly_dir }}
+  ExecStart={{ polly_dir }}/bin/start-pollybase.sh
+
+[Install]
+  WantedBy=default.target
